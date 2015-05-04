@@ -3,7 +3,7 @@ A Go-based query parser for InfoPoint installations
 
 ## Example Usage
 
-```Golang
+```Go
 package main
 
 import (
