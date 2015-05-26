@@ -4,6 +4,24 @@ type ArrayOfRoute struct {
 	Route []Route
 }
 
+type ArrayOfPublicMessage struct {
+	PublicMessage []PublicMessage
+}
+
+type PublicMessage struct {
+	DaysOfWeek   int
+	FromDate     AvailTime
+	FromTime     AvailTime
+	Message      string
+	MessageId    int
+	Priority     int
+	PublicAccess int
+	Published    bool
+	Routes       []Route
+	ToDate       AvailTime
+	ToTime       AvailTime
+}
+
 type Route struct {
 	ServerId           int
 	RouteId            int
