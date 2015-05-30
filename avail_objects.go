@@ -8,6 +8,18 @@ type ArrayOfPublicMessage struct {
 	PublicMessage []PublicMessage
 }
 
+type ArrayOfStop struct {
+	Stop []Stop
+}
+
+type ArrayOfStopDeparture struct {
+	StopDeparture StopDeparture
+}
+
+type ArrayOfVehicleLocation struct {
+	VehicleLocation []VehicleLocation
+}
+
 type PublicMessage struct {
 	DaysOfWeek   int
 	FromDate     AvailTime
@@ -36,10 +48,42 @@ type Route struct {
 	RouteTraceFilename string
 	IsHeadway          bool
 	IncludeInGoogle    bool
+	Stops              []Stop            `xml:"Stops>Stop"`
+	RouteStops         []RouteStop       `xml:"RouteStops>RouteStop"`
+	Directions         []Direction       `xml:"Directions>Direction"`
+	Vehicles           []VehicleLocation `xml:"VehicleLocations>VehicleLocation"`
 }
 
-type ArrayOfStop struct {
-	Stop []Stop
+type RouteStop struct {
+	RouteId   int
+	StopId    int
+	SortOrder int
+	Direction string
+}
+
+type Direction struct {
+	Dir string
+}
+
+type VehicleLocation struct {
+	VehicleId      int
+	Name           string
+	Latitude       float64
+	Longitude      float64
+	RouteId        int
+	TripId         int
+	RunId          int
+	Direction      string
+	DirectionLong  string
+	Heading        int
+	Deviation      float64
+	OpStatus       string
+	CommStatus     string
+	GPSStatus      int
+	LastStop       string
+	LastUpdated    AvailTime
+	DisplayStatus  string
+	BlockFareboxId int
 }
 
 type Stop struct {
@@ -52,19 +96,12 @@ type Stop struct {
 	IsTimePoint  bool
 }
 
-type ArrayOfStopDeparture struct {
-	StopDeparture StopDeparture
-}
-
 type StopDeparture struct {
 	StopId          int
 	StopRecordId    int
-	RouteDirections RouteDirections
+	RouteDirections []RouteDirection `xml:"RouteDirections>RouteDirection"`
 }
 
-type RouteDirections struct {
-	RouteDirection []RouteDirection
-}
 type RouteDirection struct {
 	RouteId        int
 	RouteSortOrder int
@@ -73,11 +110,7 @@ type RouteDirection struct {
 	DirectionCode  string
 	IsHeadway      bool
 	IsDone         bool
-	Departures     Departures
-}
-
-type Departures struct {
-	Departure []Departure
+	Departures     []Departure `xml:"Departures>Departure"`
 }
 
 type Departure struct {
