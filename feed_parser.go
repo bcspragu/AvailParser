@@ -2,7 +2,6 @@ package avail
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -32,127 +31,127 @@ func (a *Feed) NewAvailRequest(action string) (*http.Request, error) {
 	return req, nil
 }
 
-func (a *Feed) VisibleRoutes() []Route {
+func (a *Feed) VisibleRoutes() ([]Route, error) {
+	var container ArrayOfRoute
+
 	req, err := a.NewAvailRequest("routes/getvisibleroutes")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error with request:", err)
+		return container.Route, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error parsing body:", err)
+		return container.Route, err
 	}
-
-	var container ArrayOfRoute
 
 	err = xml.Unmarshal(body, &container)
 	if err != nil {
-		fmt.Println("Error parsing XML:", err)
+		return container.Route, err
 	}
 
-	return container.Route
+	return container.Route, nil
 }
 
-func (a *Feed) Stops() []Stop {
+func (a *Feed) Stops() ([]Stop, error) {
+	var container ArrayOfStop
+
 	req, err := a.NewAvailRequest("stops/getallstops")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error with request:", err)
+		return container.Stop, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error parsing body:", err)
+		return container.Stop, err
 	}
-
-	var container ArrayOfStop
 
 	err = xml.Unmarshal(body, &container)
 	if err != nil {
-		fmt.Println("Error parsing XML:", err)
+		return container.Stop, err
 	}
 
-	return container.Stop
+	return container.Stop, nil
 }
 
-func (a *Feed) CurrentMessages() []PublicMessage {
+func (a *Feed) CurrentMessages() ([]PublicMessage, error) {
+	var container ArrayOfPublicMessage
+
 	req, err := a.NewAvailRequest("PublicMessages/GetCurrentMessages")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error with request:", err)
+		return container.PublicMessage, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error parsing body:", err)
+		return container.PublicMessage, err
 	}
-
-	var container ArrayOfPublicMessage
 
 	err = xml.Unmarshal(body, &container)
 	if err != nil {
-		fmt.Println("Error parsing XML:", err)
+		return container.PublicMessage, err
 	}
 
-	return container.PublicMessage
+	return container.PublicMessage, nil
 }
 
-func (a *Feed) Route(id int) Route {
+func (a *Feed) Route(id int) (Route, error) {
+	var container Route
+
 	req, err := a.NewAvailRequest("routedetails/get/" + strconv.Itoa(id))
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error with request:", err)
+		return container, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error parsing body:", err)
+		return container, err
 	}
-
-	var container Route
 
 	err = xml.Unmarshal(body, &container)
 	if err != nil {
-		fmt.Println("Error parsing XML:", err)
+		return container, err
 	}
 
-	return container
+	return container, nil
 }
 
-func (a *Feed) StopDeparture(id int) StopDeparture {
+func (a *Feed) StopDeparture(id int) (StopDeparture, error) {
+	var container ArrayOfStopDeparture
+
 	req, err := a.NewAvailRequest("stopdepartures/get/" + strconv.Itoa(id))
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error with request:", err)
+		return container.StopDeparture, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error parsing body:", err)
+		return container.StopDeparture, err
 	}
-
-	var container ArrayOfStopDeparture
 
 	err = xml.Unmarshal(body, &container)
 	if err != nil {
-		fmt.Println("Error parsing XML:", err)
+		return container.StopDeparture, err
 	}
 
-	return container.StopDeparture
+	return container.StopDeparture, nil
 }
