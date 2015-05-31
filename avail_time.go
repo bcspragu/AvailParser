@@ -5,10 +5,18 @@ import (
 	"time"
 )
 
-var loc = time.Now().Location()
+var loc = time.UTC
 
 type AvailTime struct {
 	time.Time
+}
+
+func SetLocation(name string) error {
+	l, err := time.LoadLocation(name)
+	if err == nil {
+		loc = l
+	}
+	return err
 }
 
 func (a *AvailTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
