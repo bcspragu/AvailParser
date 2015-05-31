@@ -9,13 +9,22 @@ import (
 
 type Feed struct {
 	BaseURL string
+	client  *http.Client
 }
 
 // Create a new feed
 func NewFeed(url string) *Feed {
-	a := &Feed{url + "/InfoPoint/rest/"}
+	a := &Feed{
+		BaseURL: url + "/InfoPoint/rest/",
+		client:  &http.Client{},
+	}
 
 	return a
+}
+
+// For AppEngine
+func (a *Feed) SetClient(client *http.Client) {
+	a.client = client
 }
 
 // Make a new GET request to the requested API endpoint
@@ -36,8 +45,7 @@ func (a *Feed) VisibleRoutes() ([]Route, error) {
 
 	req, err := a.NewAvailRequest("routes/getvisibleroutes")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return container.Route, err
 	}
@@ -61,8 +69,7 @@ func (a *Feed) Stops() ([]Stop, error) {
 
 	req, err := a.NewAvailRequest("stops/getallstops")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return container.Stop, err
 	}
@@ -86,8 +93,7 @@ func (a *Feed) CurrentMessages() ([]PublicMessage, error) {
 
 	req, err := a.NewAvailRequest("PublicMessages/GetCurrentMessages")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return container.PublicMessage, err
 	}
@@ -111,8 +117,7 @@ func (a *Feed) Route(id int) (Route, error) {
 
 	req, err := a.NewAvailRequest("routedetails/get/" + strconv.Itoa(id))
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return container, err
 	}
@@ -136,8 +141,7 @@ func (a *Feed) StopDeparture(id int) (StopDeparture, error) {
 
 	req, err := a.NewAvailRequest("stopdepartures/get/" + strconv.Itoa(id))
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := a.client.Do(req)
 	if err != nil {
 		return container.StopDeparture, err
 	}
